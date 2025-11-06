@@ -1,73 +1,162 @@
-# Welcome to your Lovable project
+# JobAutopilot
 
-## Project info
+AI-powered job application automation with local Ollama LLM and IndexedDB storage.
 
-**URL**: https://lovable.dev/projects/4ecc0547-63f3-4c23-8adf-4da57ebf412c
+## Features
 
-## How can I edit this code?
+- 🤖 **Local AI**: Uses Ollama for CV parsing and cover letter generation
+- 💾 **Local Storage**: All data stored in browser IndexedDB (no cloud/login required)
+- 📄 **CV Parsing**: Extract structured data from uploaded CVs
+- 🎯 **Job Matching**: Calculate match scores based on skills
+- ✍️ **Auto Cover Letters**: Generate personalized cover letters with AI
+- 📊 **Dashboard**: Track applications and interview progress
 
-There are several ways of editing your application.
+## Prerequisites
 
-**Use Lovable**
+### 1. Install Ollama
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4ecc0547-63f3-4c23-8adf-4da57ebf412c) and start prompting.
+```bash
+# macOS/Linux
+curl -fsSL https://ollama.com/install.sh | sh
 
-Changes made via Lovable will be committed automatically to this repo.
+# Or download from https://ollama.com/download
+```
 
-**Use your preferred IDE**
+### 2. Pull a Model
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```bash
+# Recommended: Llama 2 (7B)
+ollama pull llama2
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# Or use a smaller model for faster responses
+ollama pull llama2:7b-chat
 
-Follow these steps:
+# For better quality (requires more RAM)
+ollama pull llama3
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+### 3. Start Ollama Server
+
+```bash
+ollama serve
+```
+
+Ollama will run on `http://localhost:11434` by default.
+
+## Setup
+
+1. Clone and install dependencies:
+```bash
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
+npm install
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+3. Open the app in your browser
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Usage
 
-**Use GitHub Codespaces**
+### 1. Upload CV
+- Go to "CV Upload" tab
+- Upload a .txt, .pdf, .doc, or .docx file
+- Ollama will parse and extract structured data
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### 2. Browse Jobs
+- Go to "Jobs" tab
+- Click "Refresh Jobs" to load mock job listings
+- View jobs with AI-calculated match scores
+- Click "Quick Apply" to generate cover letter
 
-## What technologies are used for this project?
+### 3. Track Applications
+- View statistics on Dashboard
+- Monitor application status
 
-This project is built with:
+## Configuration
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Change Ollama Model
 
-## How can I deploy this project?
+Edit `src/services/ollama.ts`:
 
-Simply open [Lovable](https://lovable.dev/projects/4ecc0547-63f3-4c23-8adf-4da57ebf412c) and click on Share -> Publish.
+```typescript
+constructor(baseUrl = 'http://localhost:11434', model = 'llama3') {
+  // Change 'llama3' to your preferred model
+}
+```
 
-## Can I connect a custom domain to my Lovable project?
+### Add Real Job Sources
 
-Yes, you can!
+Currently uses mock data. To add real job scraping:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. Implement scrapers for LinkedIn, Indeed, StepStone, XING
+2. Add to `src/services/jobScraper.ts`
+3. Update JobList component to call real APIs
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Technology Stack
+
+- **Frontend**: React + TypeScript + Vite
+- **UI**: Tailwind CSS + shadcn/ui
+- **AI**: Ollama (local LLM)
+- **Storage**: IndexedDB (browser-native)
+- **State**: React Query + React hooks
+
+## Development
+
+```bash
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## Troubleshooting
+
+### "Failed to parse CV" error
+- Ensure Ollama is running: `ollama serve`
+- Check Ollama is on port 11434
+- Try: `curl http://localhost:11434/api/tags`
+
+### CV parsing returns empty data
+- Model might be too small - try llama3
+- Upload simpler text format first
+- Check Ollama logs for errors
+
+### Slow response times
+- Use smaller model (llama2:7b-chat)
+- Reduce CV/job description length
+- Upgrade to GPU-accelerated Ollama
+
+## Privacy
+
+All data stays local:
+- CVs stored in browser IndexedDB
+- AI processing via local Ollama
+- No cloud services or external APIs
+- No user accounts or authentication
+
+## Deployment
+
+Deploy via Lovable: [Project Link](https://lovable.dev/projects/4ecc0547-63f3-4c23-8adf-4da57ebf412c)
+
+## Future Enhancements
+
+- [ ] Real job scraping APIs
+- [ ] Calendar integration (Google/Outlook)
+- [ ] Email automation
+- [ ] Interview scheduling
+- [ ] Multi-language support (DE/EN)
+- [ ] Export applications to PDF
+- [ ] ATS optimization
+- [ ] Follow-up automation
+
+## License
+
+MIT
